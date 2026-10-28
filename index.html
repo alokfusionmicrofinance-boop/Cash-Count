@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#123b67">
+<meta name="description" content="Fast Indian cash note counter with saved count history.">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<title>Cash Count</title>
+<style>
+:root{color-scheme:light;--navy:#123b67;--blue:#1769aa;--bg:#f2f5f9;--card:#fff;--text:#172433;--muted:#6b7889;--line:#e1e7ef;--soft:#eaf2fb;--green:#157347;--red:#b42318;--shadow:0 5px 20px #17324d0b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+header{background:linear-gradient(135deg,#102f53,var(--blue));color:white;padding:18px 15px 24px;border-radius:0 0 22px 22px}
+.head{max-width:600px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.logo{width:42px;height:42px;border-radius:13px;background:#ffffff1e;display:grid;place-items:center;font-size:24px}
+h1{font-size:22px;margin:0}.sub{font-size:12px;opacity:.85;margin-top:3px}.head-actions{display:flex;gap:7px}.headbtn{color:white;background:#ffffff20;border:1px solid #ffffff38;border-radius:11px;padding:9px 10px;font-size:13px;font-weight:750}
+main{max-width:600px;margin:-12px auto 28px;padding:0 12px}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:9px 0 12px;position:sticky;top:0;z-index:5;background:var(--bg)}
+.tab{background:#e2eaf3;color:var(--navy);padding:11px;border-radius:11px}.tab.active{background:var(--navy);color:white}
+.card{background:var(--card);border-radius:17px;padding:15px;margin-bottom:12px;box-shadow:var(--shadow)}
+.total-label{font-size:11px;font-weight:800;letter-spacing:.8px;color:var(--muted);text-transform:uppercase}.total{font-size:36px;line-height:1.2;font-weight:850;letter-spacing:-1px;color:var(--navy);margin:4px 0 13px;overflow-wrap:anywhere}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}.stat{background:#f4f7fb;padding:10px;border-radius:11px}.stat span{display:block;color:var(--muted);font-size:11px;font-weight:750;text-transform:uppercase}.stat strong{display:block;margin-top:3px;font-size:17px}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}.section-title h2{font-size:16px;margin:0}.muted{color:var(--muted);font-size:12px}
+.drow{display:grid;grid-template-columns:57px minmax(0,1fr) 78px;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--line)}.drow:last-child{border-bottom:0}
+.denom{background:var(--soft);color:var(--navy);font-weight:850;text-align:center;padding:10px 2px;border-radius:10px}
+.controls{display:flex;align-items:center;gap:5px}.step{width:36px;height:40px;padding:0;background:#e7edf4;color:var(--navy);font-size:20px;border-radius:10px;flex-shrink:0}
+.qty{width:100%;min-width:0;height:40px;border:1px solid #d0d9e4;border-radius:10px;text-align:center;font:inherit;font-weight:750;font-size:16px;background:white;color:var(--text);padding:5px}
+.line{font-size:12px;text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+input,select{font:inherit}input:focus{outline:2px solid #93c5fd;border-color:var(--blue)}
+.field{display:block;margin-top:12px}.field span{display:block;font-size:12px;font-weight:750;color:var(--muted);margin-bottom:6px}
+.amount-input{width:100%;padding:12px;border:1px solid #cdd7e3;border-radius:11px;background:white;color:var(--text)}
+.diff{margin-top:10px;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;background:#f4f7fb;border-radius:11px}.diff strong{font-size:18px;text-align:right}.green{color:var(--green)}.red{color:var(--red)}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.btn{border:0;border-radius:11px;padding:12px;font:inherit;font-size:14px;font-weight:800;cursor:pointer}.primary{background:var(--navy);color:white}.secondary{background:#e7edf4;color:var(--navy)}.outline{background:white;color:var(--navy);border:1px solid #cad5e2}.danger{color:var(--red);background:#fff0ef}
+.status{font-size:12px;color:var(--green);min-height:17px;margin-top:8px}.empty{text-align:center;padding:26px 10px;color:var(--muted);font-size:13px}
+.history-item{padding:13px 0;border-bottom:1px solid var(--line)}.history-item:last-child{border-bottom:0}.history-top{display:flex;justify-content:space-between;gap:12px;align-items:start}.history-total{font-size:18px;font-weight:850;color:var(--navy)}.history-date{font-size:12px;color:var(--muted);margin-top:3px}.history-details{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}.history-actions{display:flex;gap:7px;margin-top:9px}.history-actions button{padding:8px 10px;font-size:12px}
+.hidden{display:none!important}footer{max-width:600px;margin:auto;padding:0 15px 24px;text-align:center;color:var(--muted);font-size:11px;line-height:1.5}
+body.dark{color-scheme:dark;--bg:#111923;--card:#1b2735;--text:#eef4fa;--muted:#a8b5c5;--line:#344456;--soft:#263c54;--shadow:0 5px 20px #0002}
+body.dark .stat,body.dark .diff{background:#243241}body.dark .qty,body.dark .amount-input{background:#121d29;color:var(--text);border-color:#435368}body.dark .secondary,body.dark .step,body.dark .tab{background:#304155;color:#eef4fa}body.dark .tab.active{background:#1769aa}body.dark .outline{background:#1b2735;color:#eef4fa;border-color:#536479}body.dark .danger{background:#4b2728}
+@media(max-width:370px){.drow{grid-template-columns:51px minmax(0,1fr) 68px;gap:6px}.step{width:32px}.total{font-size:31px}.headbtn{padding:8px}}
+@media print{header,.tabs,.actions,.head-actions,.step,footer{display:none!important}body{background:white;color:#111}main{margin:0 auto}.card{box-shadow:none;border:1px solid #ddd;break-inside:avoid}}
+</style>
+</head>
+<body>
+<header><div class="head"><div class="brand"><div class="logo">₹</div><div><h1>Cash Count</h1><div class="sub">Fast Indian currency counter</div></div></div><div class="head-actions"><button class="headbtn" id="installBtn" hidden>Install</button><button class="headbtn" id="themeBtn" aria-label="Toggle dark mode">☾</button></div></div></header>
+<main>
+<div class="tabs"><button class="tab active" data-tab="counter">Cash Count</button><button class="tab" data-tab="history">History <span id="historyBadge"></span></button></div>
+<section id="counterPage">
+ <div class="card">
+  <div class="total-label">Total cash counted</div><div class="total" id="grand">₹0</div>
+  <div class="stats"><div class="stat"><span>Total notes & coins</span><strong id="pieces">0</strong></div><div class="stat"><span>Denominations used</span><strong id="used">0</strong></div></div>
+ </div>
+ <div class="card">
+  <div class="section-title"><h2>Count cash</h2><span class="muted">Qty × value</span></div>
+  <div id="denominations"></div>
+  <label class="field"><span>Expected amount (optional)</span><input class="amount-input" id="expected" type="number" min="0" step=".01" inputmode="decimal" placeholder="Enter expected cash"></label>
+  <div class="diff"><div><div class="total-label">Difference</div><div class="muted" id="diffLabel">Counted − expected</div></div><strong id="diffValue">—</strong></div>
+  <div class="actions"><button class="btn secondary" id="clearBtn">Clear</button><button class="btn primary" id="saveBtn">Save to history</button></div>
+  <div class="status" id="status" role="status"></div>
+ </div>
+ <div class="actions" style="margin-bottom:14px"><button class="btn outline" id="shareBtn">Share summary</button><button class="btn outline" id="printBtn">Print</button></div>
+ <p class="muted" style="padding:0 4px">Use only permitted totals. This is a personal calculator, not an official company system.</p>
+</section>
+<section id="historyPage" class="hidden">
+ <div class="card">
+  <div class="section-title"><h2>Saved history</h2><span class="pill" id="countBadge">0 saves</span></div>
+  <p class="muted">Counts are saved on this device. Export backups regularly.</p>
+  <div class="actions"><button class="btn secondary" id="exportBtn">Export backup</button><button class="btn outline" id="importBtn">Import backup</button></div>
+  <input id="importFile" type="file" accept="application/json,.json" class="hidden">
+  <div class="actions"><button class="btn outline" id="csvBtn">Export CSV</button><button class="btn danger" id="deleteAllBtn">Clear history</button></div>
+  <div class="status" id="historyStatus"></div>
+  <div id="historyList"></div>
+ </div>
+</section>
+</main>
+<footer>Cash Count · Offline-ready after installation · History stored locally on this device</footer>
+<script>
+const DENOMS=[500,200,100,50,20,10,5,2,1], KEY='cashCountSimple.v1';
+const $=id=>document.getElementById(id), money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{maximumFractionDigits:2});
+let history=[], deferredPrompt=null;
+const today=()=>new Date().toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'});
+function safeLoad(){try{let d=JSON.parse(localStorage.getItem(KEY)||'[]');history=Array.isArray(d)?d:[]}catch(e){history=[]}}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(history));return true}catch(e){$('status').textContent='Could not save. Export a backup and check browser storage.';return false}}
+function initDenoms(){DENOMS.forEach(v=>{let r=document.createElement('div');r.className='drow';r.innerHTML=`<div class="denom">₹${v}</div><div class="controls"><button class="step" type="button" data-step="-1" data-v="${v}" aria-label="Decrease ₹${v}">−</button><input class="qty" id="q${v}" type="number" min="0" step="1" inputmode="numeric" placeholder="0" aria-label="Quantity of ₹${v}"><button class="step" type="button" data-step="1" data-v="${v}" aria-label="Increase ₹${v}">+</button></div><div class="line" id="l${v}">₹0</div>`;$('denominations').appendChild(r)})}
+function quantities(){return Object.fromEntries(DENOMS.map(v=>[v,Math.max(0,Math.floor(Number($('q'+v).value)||0))]))}
+function totalOf(q){return DENOMS.reduce((s,v)=>s+v*(Number(q[v])||0),0)}
+function calc(){let q=quantities(),total=totalOf(q),pieces=DENOMS.reduce((s,v)=>s+q[v],0),used=DENOMS.filter(v=>q[v]>0).length;DENOMS.forEach(v=>$('l'+v).textContent=money(q[v]*v));$('grand').textContent=money(total);$('pieces').textContent=pieces.toLocaleString('en-IN');$('used').textContent=used;
+let e=$('expected').value;if(e===''){$('diffValue').textContent='—';$('diffValue').className='';$('diffLabel').textContent='Counted − expected'}else{let d=total-(Number(e)||0);$('diffValue').textContent=(d>0?'+':d<0?'−':'')+money(Math.abs(d));$('diffValue').className=d===0?'green':d<0?'red':'green';$('diffLabel').textContent=d===0?'Matches expected':d>0?'Cash is higher':'Cash is short'}return {q,total,expected:e===''?null:Number(e),pieces,used}}
+function renderHistory(){let el=$('historyList');$('historyBadge').textContent=history.length?`(${history.length})`:'';$('countBadge').textContent=`${history.length} save${history.length===1?'':'s'}`;if(!history.length){el.innerHTML='<div class="empty">No saved counts yet.<br>Count cash and tap “Save to history”.</div>';return}
+el.innerHTML=history.slice().reverse().map((h,revIndex)=>{let i=history.length-1-revIndex;let breakdown=DENOMS.filter(v=>(h.q?.[v]||0)>0).map(v=>`₹${v} × ${h.q[v]}`).join(' · ')||'No notes entered';let delta=h.expected===null||h.expected===undefined?null:h.total-h.expected;return `<div class="history-item"><div class="history-top"><div><div class="history-total">${money(h.total)}</div><div class="history-date">${escapeHtml(h.date)}</div></div><span class="pill">${h.pieces} pieces</span></div><div class="history-details">${escapeHtml(breakdown)}${h.expected!==null&&h.expected!==undefined?'<br>Expected '+money(h.expected)+' · Difference '+(delta>0?'+':'')+money(delta):''}</div><div class="history-actions"><button class="btn secondary" data-load="${i}">Load count</button><button class="btn outline" data-share="${i}">Share</button><button class="btn danger" data-delete="${i}">Delete</button></div></div>`}).join('')}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function snapshot(){let c=calc();return {id:Date.now(),date:today(),q:c.q,total:c.total,expected:c.expected,pieces:c.pieces,used:c.used}}
+function textFor(h){let a=['Cash Count summary',h.date,''];DENOMS.forEach(v=>{if(h.q[v])a.push(`₹${v} × ${h.q[v]} = ${money(v*h.q[v])}`)});a.push('',`Total pieces: ${h.pieces}`,`Total cash: ${money(h.total)}`);if(h.expected!==null&&h.expected!==undefined)a.push(`Expected: ${money(h.expected)}`,`Difference: ${money(h.total-h.expected)}`);return a.join('\n')}
+async function shareText(text){try{if(navigator.share)await navigator.share({title:'Cash Count summary',text});else if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(text);$('status').textContent='Summary copied.'}else prompt('Copy summary',text)}catch(e){if(e.name!=='AbortError')$('status').textContent='Sharing unavailable; try copying manually.'}}
+function download(name,content,type){let blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200)}
+function switchTab(tab){$('counterPage').classList.toggle('hidden',tab!=='counter');$('historyPage').classList.toggle('hidden',tab!=='history');document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));if(tab==='history')renderHistory();window.scrollTo({top:0,behavior:'smooth'})}
+function init(){safeLoad();initDenoms();DENOMS.forEach(v=>$('q'+v).value='');calc();renderHistory();
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
+$('denominations').addEventListener('input',calc);$('expected').addEventListener('input',calc);
+$('denominations').addEventListener('click',e=>{let b=e.target.closest('[data-step]');if(!b)return;let input=$('q'+b.dataset.v);input.value=Math.max(0,(Number(input.value)||0)+Number(b.dataset.step));calc()});
+$('clearBtn').addEventListener('click',()=>{DENOMS.forEach(v=>$('q'+v).value='');$('expected').value='';calc();$('status').textContent='Count cleared.'});
+$('saveBtn').addEventListener('click',()=>{let h=snapshot();history.push(h);if(persist()){$('status').textContent='Count saved to history.';renderHistory()}});
+$('shareBtn').addEventListener('click',()=>shareText(textFor(snapshot())));
+$('printBtn').addEventListener('click',()=>window.print());
+$('historyList').addEventListener('click',e=>{let load=e.target.closest('[data-load]'),share=e.target.closest('[data-share]'),del=e.target.closest('[data-delete]');if(load){let h=history[Number(load.dataset.load)];DENOMS.forEach(v=>$('q'+v).value=h.q?.[v]||'');$('expected').value=h.expected??'';calc();$('status').textContent='Saved count loaded.';switchTab('counter')}if(share){shareText(textFor(history[Number(share.dataset.share)]))}if(del){let i=Number(del.dataset.delete);if(confirm('Delete this saved count?')){history.splice(i,1);persist();renderHistory()}}});
+$('exportBtn').addEventListener('click',()=>{download('cash-count-history-backup.json',JSON.stringify({app:'Cash Count',version:1,exportedAt:new Date().toISOString(),history},null,2),'application/json');$('historyStatus').textContent='Backup exported. Save it somewhere safe.'});
+$('importBtn').addEventListener('click',()=>$('importFile').click());
+$('importFile').addEventListener('change',async e=>{let f=e.target.files?.[0];if(!f)return;try{let data=JSON.parse(await f.text()),incoming=Array.isArray(data)?data:data.history;if(!Array.isArray(incoming))throw Error('Invalid');if(!confirm(`Import ${incoming.length} saved counts? They will be added to your current history.`))return;history=history.concat(incoming.filter(x=>x&&x.q&&Number.isFinite(Number(x.total))));persist();renderHistory();$('historyStatus').textContent='Backup imported.'}catch(err){$('historyStatus').textContent='Invalid backup file.'}finally{e.target.value=''}});
+$('csvBtn').addEventListener('click',()=>{let head=['Date',...DENOMS.map(v=>'₹'+v+' quantity'),'Total pieces','Total cash','Expected','Difference'];let rows=[head,...history.map(h=>[h.date,...DENOMS.map(v=>h.q?.[v]||0),h.pieces,h.total,h.expected??'',h.expected==null?'':h.total-h.expected])];let csv='\ufeff'+rows.map(r=>r.map(x=>'"'+String(x??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');download('cash-count-history.csv',csv,'text/csv;charset=utf-8');$('historyStatus').textContent='CSV exported.'});
+$('deleteAllBtn').addEventListener('click',()=>{if(confirm('Delete all saved history from this device? Export a backup first if needed.')){history=[];persist();renderHistory();$('historyStatus').textContent='History cleared.'}});
+$('themeBtn').addEventListener('click',()=>{document.body.classList.toggle('dark');let d=document.body.classList.contains('dark');$('themeBtn').textContent=d?'☀':'☾';try{localStorage.setItem('cashCountTheme',d?'dark':'light')}catch(e){}});
+try{if(localStorage.getItem('cashCountTheme')==='dark'){document.body.classList.add('dark');$('themeBtn').textContent='☀'}}catch(e){}
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('installBtn').hidden=false});
+$('installBtn').addEventListener('click',async()=>{if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('installBtn').hidden=true}else{alert('To install: host this app on HTTPS (for example GitHub Pages), open it in Chrome, then use the browser menu → Add to Home screen / Install app.')}})
+window.addEventListener('appinstalled',()=>{$('installBtn').hidden=true;$('status').textContent='App installed.'});
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "id": "./",
+  "name": "Cash Count",
+  "short_name": "Cash Count",
+  "description": "Fast Indian currency counter with saved count history.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f2f5f9",
+  "theme_color": "#123b67",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
